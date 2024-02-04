@@ -1,23 +1,23 @@
 cmake_minimum_required(VERSION 3.4.1)
 include_directories(${CMAKE_CURRENT_LIST_DIR}/includes)
 
-add_library( MNN SHARED IMPORTED GLOBAL )
+add_library( MNNs SHARED IMPORTED GLOBAL )
 set_target_properties(
-                MNN
+                MNNs
                 PROPERTIES IMPORTED_LOCATION
-                ${CMAKE_CURRENT_LIST_DIR}/libs/${ANDROID_ABI}/libMNN.so
+                ${CMAKE_CURRENT_LIST_DIR}/libs/${ANDROID_ABI}/libMNNs.so
                 )
 
-add_library( MNN_CL SHARED IMPORTED GLOBAL )
-set_target_properties( MNN_CL
+add_library( MNNs_CL SHARED IMPORTED GLOBAL )
+set_target_properties( MNNs_CL
                 PROPERTIES IMPORTED_LOCATION
-                ${CMAKE_CURRENT_LIST_DIR}/libs/${ANDROID_ABI}/libMNN_CL.so
+                ${CMAKE_CURRENT_LIST_DIR}/libs/${ANDROID_ABI}/libMNNs_CL.so
                 )
 
-add_library( MNN_Express SHARED IMPORTED GLOBAL )
-set_target_properties( MNN_Express
+add_library( MNNs_Express SHARED IMPORTED GLOBAL )
+set_target_properties( MNNs_Express
                 PROPERTIES IMPORTED_LOCATION
-                ${CMAKE_CURRENT_LIST_DIR}/libs/${ANDROID_ABI}/libMNN_Express.so
+                ${CMAKE_CURRENT_LIST_DIR}/libs/${ANDROID_ABI}/libMNNs_Express.so
                 )
 
 add_library( MNNOpenCV SHARED IMPORTED GLOBAL )

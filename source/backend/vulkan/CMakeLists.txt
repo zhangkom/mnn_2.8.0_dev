@@ -21,7 +21,7 @@ IF(MNN_SEP_BUILD)
         SHARED
         ${MNN_Vulkan_SRC}
         )
-    target_link_libraries(MNN_Vulkan MNN)
+    target_link_libraries(MNN_Vulkan MNNs)
     if (MNN_USE_SYSTEM_LIB)
         target_link_libraries(MNN_Vulkan ${Vulkan_LIBRARY})
     else()

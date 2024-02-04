@@ -39,14 +39,14 @@ IF(MNN_SEP_BUILD)
     if (MNN_BUILD_FOR_ANDROID_COMMAND)
         set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "../../../")
     endif()
-    add_library(MNN_CL SHARED ${MNN_OpenCL_SRC} "${CMAKE_CURRENT_LIST_DIR}/execution/cl/opencl_program.cc")
-    target_link_libraries(MNN_CL MNN ${OpenCL_LIBRARIES})
+    add_library(MNNs_CL SHARED ${MNN_OpenCL_SRC} "${CMAKE_CURRENT_LIST_DIR}/execution/cl/opencl_program.cc")
+    target_link_libraries(MNNs_CL MNNs ${OpenCL_LIBRARIES})
 ELSE()
-    add_library(MNN_CL OBJECT ${MNN_OpenCL_SRC} "${CMAKE_CURRENT_LIST_DIR}/execution/cl/opencl_program.cc")
+    add_library(MNNs_CL OBJECT ${MNN_OpenCL_SRC} "${CMAKE_CURRENT_LIST_DIR}/execution/cl/opencl_program.cc")
     set(MNN_OCL_LIBS ${OpenCL_LIBRARIES} PARENT_SCOPE)
 ENDIF()
 
-target_include_directories(MNN_CL PRIVATE
+target_include_directories(MNNs_CL PRIVATE
     ${CMAKE_SOURCE_DIR}/include/
     ${CMAKE_CURRENT_LIST_DIR}/schema/current
     ${CMAKE_SOURCE_DIR}/3rd_party/half

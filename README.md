@@ -148,4 +148,3 @@ MNN refers to the following projects:
 - [libyuv](https://chromium.googlesource.com/libyuv/libyuv)
 - [libjpeg](https://github.com/libjpeg-turbo/libjpeg-turbo)
 - [opencv](https://github.com/opencv/opencv)
-# mnn_2.8.0_dev

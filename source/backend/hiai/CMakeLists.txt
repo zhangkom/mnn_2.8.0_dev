@@ -19,7 +19,7 @@ IF(MNN_SEP_BUILD)
 
         target_link_libraries(MNN_NPU PRIVATE
                 hiai hiai_ir hiai_ir_build
-                MNN
+                MNNs
         )
 ELSE()
         add_library(

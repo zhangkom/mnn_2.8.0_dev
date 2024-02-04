@@ -466,7 +466,7 @@ endif()
 # Metal
 set(MNN_DEPS "")
 set(MNN_EXTRA_DEPENDS "")
-list(APPEND MNN_DEPS MNN)
+list(APPEND MNN_DEPS MNNs)
 
 # Plugin
 if(MNN_WITH_PLUGIN)
@@ -550,10 +550,10 @@ ENDIF()
 IF(MNN_OPENCL)
   add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/source/backend/opencl/)
   IF(MNN_SEP_BUILD)
-    list(APPEND MNN_DEPS MNN_CL)
+    list(APPEND MNN_DEPS MNNs_CL)
   ELSE()
-    list(APPEND MNN_TARGETS MNN_CL)
-    list(APPEND MNN_OBJECTS_TO_LINK $<TARGET_OBJECTS:MNN_CL>)
+    list(APPEND MNN_TARGETS MNNs_CL)
+    list(APPEND MNN_OBJECTS_TO_LINK $<TARGET_OBJECTS:MNNs_CL>)
     list(APPEND MNN_EXTRA_DEPENDS ${MNN_OCL_LIBS})
   ENDIF()
 ENDIF()
@@ -584,16 +584,16 @@ ENDIF()
 # Express
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/express/)
 IF(MNN_SEP_BUILD)
-  list(APPEND MNN_DEPS MNN_Express)
+  list(APPEND MNN_DEPS MNNs_Express)
 ELSE()
-   list(APPEND MNN_TARGETS MNN_Express)
-   list(APPEND MNN_OBJECTS_TO_LINK $<TARGET_OBJECTS:MNN_Express>)
+   list(APPEND MNN_TARGETS MNNs_Express)
+   list(APPEND MNN_OBJECTS_TO_LINK $<TARGET_OBJECTS:MNNs_Express>)
 ENDIF()
 
 # Model Internal. Enable MNN internal features such as model authentication and metrics logging.
 if (MNN_INTERNAL)
     target_compile_options(MNNCore PRIVATE -DMNN_INTERNAL_ENABLED)
-    target_compile_options(MNN_Express PRIVATE -DMNN_INTERNAL_ENABLED)
+    target_compile_options(MNNs_Express PRIVATE -DMNN_INTERNAL_ENABLED)
     include(${CMAKE_CURRENT_LIST_DIR}/source/internal/logging/CMakeLists.txt)
     if(CMAKE_SYSTEM_NAME MATCHES "^Linux")
         list(APPEND MNN_EXTRA_DEPENDS "-lcurl -lssl -lcrypto")
@@ -648,32 +648,32 @@ IF(MNN_TENSORRT)
 ENDIF()
 
 IF(MNN_SEP_BUILD)
-  add_library(MNN SHARED ${CMAKE_CURRENT_LIST_DIR}/cmake/dummy.cpp ${MNN_OBJECTS_TO_LINK} ${MNN_PUB_HDRS} ${MNN_EXPR_PUB_HDRS})
-  target_link_libraries(MNN PUBLIC ${MNN_EXTRA_DEPENDS})
+  add_library(MNNs SHARED ${CMAKE_CURRENT_LIST_DIR}/cmake/dummy.cpp ${MNN_OBJECTS_TO_LINK} ${MNN_PUB_HDRS} ${MNN_EXPR_PUB_HDRS})
+  target_link_libraries(MNNs PUBLIC ${MNN_EXTRA_DEPENDS})
 ELSE()
   IF(MNN_BUILD_SHARED_LIBS)
-    add_library(MNN SHARED ${CMAKE_CURRENT_LIST_DIR}/cmake/dummy.cpp ${MNN_OBJECTS_TO_LINK} ${MNN_PUB_HDRS} ${MNN_EXPR_PUB_HDRS})
+    add_library(MNNs SHARED ${CMAKE_CURRENT_LIST_DIR}/cmake/dummy.cpp ${MNN_OBJECTS_TO_LINK} ${MNN_PUB_HDRS} ${MNN_EXPR_PUB_HDRS})
     if (WIN32)
       foreach(TARGET ${MNN_TARGETS})
         target_compile_definitions(${TARGET} PRIVATE "-DBUILDING_MNN_DLL")
         target_compile_definitions(${TARGET} INTERFACE "-DUSING_MNN_DLL")
       endforeach()
-      target_compile_definitions(MNN PRIVATE "-DBUILDING_MNN_DLL")
-      target_compile_definitions(MNN INTERFACE "-DUSING_MNN_DLL")
+      target_compile_definitions(MNNs PRIVATE "-DBUILDING_MNN_DLL")
+      target_compile_definitions(MNNs INTERFACE "-DUSING_MNN_DLL")
     endif()
   ELSE()
-    add_library(MNN STATIC ${CMAKE_CURRENT_LIST_DIR}/cmake/dummy.cpp ${MNN_OBJECTS_TO_LINK} ${MNN_PUB_HDRS} ${MNN_EXPR_PUB_HDRS})
+    add_library(MNNs STATIC ${CMAKE_CURRENT_LIST_DIR}/cmake/dummy.cpp ${MNN_OBJECTS_TO_LINK} ${MNN_PUB_HDRS} ${MNN_EXPR_PUB_HDRS})
   ENDIF()
-  target_link_libraries(MNN PUBLIC ${MNN_EXTRA_DEPENDS})
+  target_link_libraries(MNNs PUBLIC ${MNN_EXTRA_DEPENDS})
 ENDIF()
 if (MSVC)
-  target_link_options(MNN PRIVATE "/IGNORE:4049,4217")
+  target_link_options(MNNs PRIVATE "/IGNORE:4049,4217")
   if (MNN_CUDA)
     if (MNN_BUILD_SHARED_LIBS)
-      target_link_options(MNN PRIVATE "/WHOLEARCHIVE:$<TARGET_FILE:MNN_CUDA>")
+      target_link_options(MNNs PRIVATE "/WHOLEARCHIVE:$<TARGET_FILE:MNN_CUDA>")
     else()
       add_custom_command(
-        TARGET MNN
+        TARGET MNNs
         POST_BUILD
         COMMAND lib.exe ARGS /OUT:$<TARGET_FILE:MNN> $<TARGET_FILE:MNN> $<TARGET_FILE:MNN_CUDA>
       )
@@ -681,7 +681,7 @@ if (MSVC)
   endif()
 endif()
 if (MNN_ONEDNN)
-    add_dependencies(MNN ONEDNN_COMMON ONEDNN_CPU ONEDNN_CPU_X64)
+    add_dependencies(MNNs ONEDNN_COMMON ONEDNN_CPU ONEDNN_CPU_X64)
 endif()
 
 if(APPLE)
@@ -704,11 +704,11 @@ if(APPLE)
       target_link_libraries(MNN PUBLIC ${GRAPHIC})
     ENDIF()
 endif()
-add_dependencies(MNN MNNCore MNNCV MNNTransform MNNMath MNNCPU)
+add_dependencies(MNNs MNNCore MNNCV MNNTransform MNNMath MNNCPU)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/tools/converter)
 IF(WIN32 AND MNN_BUILD_CONVERTER AND MNN_BUILD_SHARED_LIBS)
 # Because of dllimport/dllexport, we merge MNN and MNNConvertDeps together, which depend protobuf
-  target_link_libraries(MNN PUBLIC ${Protobuf_LIBRARIES})
+  target_link_libraries(MNNs PUBLIC ${Protobuf_LIBRARIES})
 ENDIF()
 # Merge MNN/MNNExpress/MNNOpenCV and other backends into one .lib/.dll on Windows
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/tools/cv)
@@ -716,15 +716,15 @@ IF(MNN_BUILD_OPENCV AND NOT MNN_SEP_BUILD)
   IF(MSVC)
     target_compile_definitions(MNNOpenCV PRIVATE "-DBUILDING_MNN_DLL" INTERFACE "-DUSING_MNN_DLL")
   ENDIF()
-  target_sources(MNN PRIVATE $<TARGET_OBJECTS:MNNOpenCV>)
+  target_sources(MNNs PRIVATE $<TARGET_OBJECTS:MNNOpenCV>)
 ENDIF()
 
 if(CMAKE_SYSTEM_NAME MATCHES "^Linux")
 # Using -pthread, needed by thread-safe implemention of glibc, is better than only using -lpthread
 # https://stackoverflow.com/questions/23250863/difference-between-pthread-and-lpthread-while-compiling
-  target_link_libraries(MNN PUBLIC -pthread dl)
+  target_link_libraries(MNNs PUBLIC -pthread dl)
 elseif(CMAKE_SYSTEM_NAME MATCHES "^Android")
-  target_link_libraries(MNN PUBLIC log m)
+  target_link_libraries(MNNs PUBLIC log m)
 else()
 endif()
 if (NOT MNN_BUILD_SHARED_LIBS)
@@ -741,8 +741,8 @@ if (NOT MNN_BUILD_SHARED_LIBS)
         endif()
     endif()
 endif()
-list(APPEND MNN_TARGETS MNN)
-list(REMOVE_ITEM MNN_TARGETS MNN)
+list(APPEND MNN_TARGETS MNNs)
+list(REMOVE_ITEM MNN_TARGETS MNNs)
 IF(MNN_BUILD_DEMO)
 include(${CMAKE_CURRENT_LIST_DIR}/demo/exec/CMakeLists.txt)
 ENDIF()
@@ -769,20 +769,20 @@ IF(CMAKE_SYSTEM_NAME MATCHES "^Android" AND NOT MNN_BUILD_FOR_ANDROID_COMMAND)
     ENDIF()
     set(MNN_INCLUDE_OUTPUT ${NATIVE_INCLUDE_OUTPUT}/MNN)
     add_custom_command(
-      TARGET MNN
+      TARGET MNNs
       POST_BUILD
       COMMAND ${CMAKE_COMMAND}
       -E make_directory "${MNN_INCLUDE_OUTPUT}/"
     )
     add_custom_command(
-      TARGET MNN
+      TARGET MNNs
       POST_BUILD
       COMMAND ${CMAKE_COMMAND}
       -E make_directory "${MNN_INCLUDE_OUTPUT}/expr/"
     )
     FOREACH(header ${MNN_PUB_HDRS})
       add_custom_command(
-        TARGET MNN
+        TARGET MNNs
         POST_BUILD
         COMMAND ${CMAKE_COMMAND}
         ARGS -E copy ${header} "${MNN_INCLUDE_OUTPUT}/"
@@ -790,7 +790,7 @@ IF(CMAKE_SYSTEM_NAME MATCHES "^Android" AND NOT MNN_BUILD_FOR_ANDROID_COMMAND)
     ENDFOREACH()
     FOREACH(header ${MNN_EXPR_PUB_HDRS})
       add_custom_command(
-        TARGET MNN
+        TARGET MNNs
         POST_BUILD
         COMMAND ${CMAKE_COMMAND}
         ARGS -E copy ${header} "${MNN_INCLUDE_OUTPUT}/expr/"
@@ -799,12 +799,12 @@ IF(CMAKE_SYSTEM_NAME MATCHES "^Android" AND NOT MNN_BUILD_FOR_ANDROID_COMMAND)
 ELSEIF(NOT APPLE)
   INSTALL(FILES ${MNN_PUB_HDRS} DESTINATION include/MNN/)
   INSTALL(FILES ${MNN_EXPR_PUB_HDRS} DESTINATION include/MNN/expr/)
-  install(TARGETS MNN
+  install(TARGETS MNNs
       LIBRARY DESTINATION lib
       ARCHIVE DESTINATION lib
   )
 ELSE()
-  install(TARGETS MNN
+  install(TARGETS MNNs
       LIBRARY DESTINATION lib
       ARCHIVE DESTINATION lib
       FRAMEWORK DESTINATION /Library/Frameworks/

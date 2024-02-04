@@ -22,18 +22,18 @@ IF(MNN_SEP_BUILD)
         set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "../")
     endif()
     if (MNN_BUILD_MINI)
-        add_library(MNN_Express SHARED ${MNN_EXPR_SRCS} $<TARGET_OBJECTS:MNNTransform>)
-        target_compile_options(MNN_Express PRIVATE -DMNN_BUILD_MINI)
+        add_library(MNNs_Express SHARED ${MNN_EXPR_SRCS} $<TARGET_OBJECTS:MNNTransform>)
+        target_compile_options(MNNs_Express PRIVATE -DMNN_BUILD_MINI)
     else()
-        add_library(MNN_Express SHARED ${MNN_EXPR_SRCS})
+        add_library(MNNs_Express SHARED ${MNN_EXPR_SRCS})
     endif()
-    target_link_libraries(MNN_Express MNN ${EXTRA_LIBS})
-    install(TARGETS MNN_Express
+    target_link_libraries(MNNs_Express MNNs ${EXTRA_LIBS})
+    install(TARGETS MNNs_Express
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib
         )
 ELSE()
-    add_library(MNN_Express OBJECT ${MNN_EXPR_SRCS})
+    add_library(MNNs_Express OBJECT ${MNN_EXPR_SRCS})
 ENDIF()
 
 
