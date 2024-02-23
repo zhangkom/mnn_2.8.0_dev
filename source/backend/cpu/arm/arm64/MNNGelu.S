@@ -45,8 +45,8 @@ dup v10.4s, w9        // v10: [28.f]x4
 dup v9.4s, w10        // v9: [3150.f]x4
 dup v8.4s, w11        // v8: [62370.f]x4
 
-mov w4, #5.0
-mov w5, #-5.0
+mov w4, #5
+mov w5, #-5
 
 dup v30.4s, w4
 dup v31.4s, w5
